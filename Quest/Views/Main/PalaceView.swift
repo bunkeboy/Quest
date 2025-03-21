@@ -84,7 +84,7 @@ struct PalaceView: View {
                 
                 // Streak
                 VStack {
-                    Image(systemName: "flame.fill")
+                    Image("streak-flame-icon")
                         .font(.system(size: 30))
                         .foregroundColor(ThemeManager.accentColor)
                     

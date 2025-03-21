@@ -15,22 +15,38 @@ struct MainTabView: View {
         TabView {
             QuestsView()
                 .tabItem {
-                    Label("Quests", systemImage: "scroll")
+                    Label {
+                        Text("Quests")
+                    } icon: {
+                        Image("quest-icon")
+                    }
                 }
             
             KingdomView()
                 .tabItem {
-                    Label("Kingdom", systemImage: "house")
+                    Label {
+                        Text("Kingdom")
+                    } icon: {
+                        Image("kingdom-icon")
+                    }
                 }
             
             PalaceView()
                 .tabItem {
-                    Label("Palace", systemImage: "crown")
+                    Label {
+                        Text("Palace")
+                    } icon: {
+                        Image("palace-icon")
+                    }
                 }
             
             TournamentView()
                 .tabItem {
-                    Label("Tournament", systemImage: "trophy")
+                    Label {
+                        Text("Tournament")
+                    } icon: {
+                        Image("tournament-icon")
+                    }
                 }
             
             SettingsView()
