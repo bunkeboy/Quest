@@ -14,6 +14,16 @@
 import Foundation
 import SwiftUI
 
+
+enum GoalType: String, CaseIterable, Identifiable {
+    case commission = "Commission Income"
+    case deals = "Deals Closed"
+    case volume = "Deal Volume"
+    
+    var id: String { self.rawValue }
+}
+
+
 // Business source types
 enum BusinessSource: String, CaseIterable, Identifiable {
     case sourcedLeads = "Sourced Leads"
@@ -25,6 +35,7 @@ enum BusinessSource: String, CaseIterable, Identifiable {
     
     var id: String { self.rawValue }
 }
+
 
 // Activity types
 enum NurturingActivity: String, CaseIterable, Identifiable {

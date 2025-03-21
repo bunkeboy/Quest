@@ -19,27 +19,25 @@ struct OnboardingView: View {
                 // Content changes based on current step
                 switch viewModel.currentStep {
                 case 1:
-                    GCIGoalView(viewModel: viewModel)
+                    WelcomeView(viewModel: viewModel)
                 case 2:
-                    VolumeGoalView(viewModel: viewModel)
+                    GoalSettingView(viewModel: viewModel)
                 case 3:
-                    TransactionsGoalView(viewModel: viewModel)
-                case 4:
                     IncomeSourcesView(viewModel: viewModel)
-                case 5:
+                case 4:
                     NurturingActivitiesView(viewModel: viewModel)
-                case 6:
+                case 5:
                     GeneratingActivityView(viewModel: viewModel)
-                case 7:
+                case 6:
                     SkillAssessmentView(viewModel: viewModel)
-                case 8:
+                case 7:
                     ActivityPlanView(viewModel: viewModel)
+                case 8:
+                    QuestCadenceView(viewModel: viewModel)
                 case 9:
-                    QuestCadenceView(viewModel: viewModel) // Add our new cadence view
+                    QuestActivitySetupView(viewModel: viewModel)
                 case 10:
-                    QuestActivitySetupView(viewModel: viewModel) // Add our new activity setup view
-                case 11:
-                    SummaryView(viewModel: viewModel) // Move summary to the final step
+                    SummaryView(viewModel: viewModel)
                 default:
                     Text("Unknown step")
                 }
@@ -97,7 +95,7 @@ struct OnboardingView: View {
                 .padding()
             }
             .background(ThemeManager.backgroundPrimary)
-            .navigationTitle("Kingdom Setup \(viewModel.currentStep)/11")
+            .navigationTitle("Kingdom Setup \(viewModel.currentStep)/10")
             .navigationBarTitleDisplayMode(.inline)
         }
     }

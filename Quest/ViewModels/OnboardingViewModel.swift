@@ -26,6 +26,9 @@ class OnboardingViewModel: ObservableObject {
     @Published var prospectToSaleRatio: Double = 10 // Default 10:1
     @Published var calculatedActivityCount: Int = 0
     @Published var selectedTile: ActivityTile?
+    @Published var goalType: Quest.GoalType = .commission
+    @Published var goalValue: Double = 300000
+    @Published var timelineMonths: Int = 12
     
     // User can select up to 3 income sources
     let incomeSources = ["Brokerage leads", "Sphere of influence", "Door knocking", 
