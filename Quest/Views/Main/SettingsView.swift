@@ -18,6 +18,7 @@ struct SettingsView: View {
     @State private var notificationsEnabled = true
     @State private var soundEnabled = true
     @State private var themePreference: ThemePreference = .light
+    @State private var showOnboarding = false
     
     // State for CRM connection
     @State private var isCRMConnected = false
@@ -148,6 +149,30 @@ struct SettingsView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                     .padding()
+                }
+                
+                // Add the restart onboarding button here
+                Divider()
+                    .padding(.horizontal)
+                    
+                Button(action: {
+                    // Reset onboarding flag
+                    UserDefaults.standard.set(false, forKey: "onboardingComplete")
+                    // Present onboarding
+                    showOnboarding = true
+                }) {
+                    HStack {
+                        Image(systemName: "arrow.counterclockwise")
+                            .foregroundColor(ThemeManager.secondaryColor)
+                        
+                        Text("Restart Kingdom Setup")
+                            .foregroundColor(ThemeManager.textPrimary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                }
+                .fullScreenCover(isPresented: $showOnboarding) {
+                    OnboardingView()
                 }
             }
             .background(ThemeManager.backgroundSecondary)

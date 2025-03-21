@@ -11,9 +11,15 @@ import SwiftUI
 
 @main
 struct QuestApp: App {
+    @AppStorage("onboardingComplete") var onboardingComplete: Bool = false
+    
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            if onboardingComplete {
+                MainTabView()
+            } else {
+                OnboardingView()
+            }
         }
     }
 }
