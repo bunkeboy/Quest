@@ -18,6 +18,14 @@ class OnboardingViewModel: ObservableObject {
     @Published var selectedNurturingActivities: [String] = []
     @Published var selectedGeneratingActivity: String = ""
     @Published var skillLevel: SkillLevel = .beginner
+    @Published var questCadence = QuestCadence()
+    @Published var currentSource: BusinessSource = .newLeads
+    @Published var businessPercentage: Double = 20 // Default 20%
+    @Published var currentActivity: NurturingActivity = .phoneCalls
+    @Published var leadsToProspectRatio: Double = 10 // Default 10:1
+    @Published var prospectToSaleRatio: Double = 10 // Default 10:1
+    @Published var calculatedActivityCount: Int = 0
+    @Published var selectedTile: ActivityTile?
     
     // User can select up to 3 income sources
     let incomeSources = ["Brokerage leads", "Sphere of influence", "Door knocking", 
@@ -55,5 +63,72 @@ class OnboardingViewModel: ObservableObject {
         // Save all onboarding data
         // Mark onboarding as complete
         UserDefaults.standard.set(true, forKey: "onboardingComplete")
+    }
+    
+    func calculateActivityCount() {
+        // Formula: Goal $ × Business % × Lead:Prospect % × Prospect:Sale %
+        let businessFraction = businessPercentage / 100.0
+        let prospectLeadFraction = 1.0 / leadsToProspectRatio
+        let saleProspectFraction = 1.0 / prospectToSaleRatio
+        
+        let activityCount = gciGoal * businessFraction * prospectLeadFraction * saleProspectFraction
+        calculatedActivityCount = Int(activityCount.rounded())
+    }
+
+    // Create a new activity tile based on current selections
+    func createActivityTile() {
+        let newTile = ActivityTile(
+            source: currentSource,
+            activity: currentActivity,
+            totalCount: calculatedActivityCount,
+            unallocatedCount: calculatedActivityCount
+        )
+        
+        questCadence.activityTiles.append(newTile)
+    }
+
+    // Allocate activities to a specific cadence
+    func allocateActivities(tile: ActivityTile, cadence: CadenceType, count: Int) -> Bool {
+        // Find the tile in our array
+        guard let index = questCadence.activityTiles.firstIndex(where: { $0.id == tile.id }) else {
+            return false
+        }
+        
+        // Make sure we're not over-allocating
+        if count > questCadence.activityTiles[index].unallocatedCount {
+            return false
+        }
+        
+        // Update the allocation
+        questCadence.activityTiles[index].allocations[cadence, default: 0] += count
+        questCadence.activityTiles[index].unallocatedCount -= count
+        
+        return true
+    }
+
+    // Calculate suggested allocation for a cadence
+    func suggestedAllocation(tile: ActivityTile, cadence: CadenceType) -> Int {
+        switch cadence {
+        case .daily:
+            return tile.unallocatedCount
+        case .weekly:
+            return tile.unallocatedCount / 52 // Split over 52 weeks
+        case .monthly:
+            return tile.unallocatedCount / 12 // Split over 12 months
+        case .quarterly:
+            return tile.unallocatedCount / 4 // Split over 4 quarters
+        case .annual:
+            return tile.unallocatedCount // All in one annual event
+        }
+    }
+
+    // Reset current activity selections to start a new activity
+    func resetActivitySelections() {
+        currentSource = .newLeads
+        businessPercentage = 20
+        currentActivity = .phoneCalls
+        leadsToProspectRatio = 10
+        prospectToSaleRatio = 10
+        calculatedActivityCount = 0
     }
 }

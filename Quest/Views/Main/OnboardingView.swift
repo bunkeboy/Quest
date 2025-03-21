@@ -35,7 +35,11 @@ struct OnboardingView: View {
                 case 8:
                     ActivityPlanView(viewModel: viewModel)
                 case 9:
-                    SummaryView(viewModel: viewModel)
+                    QuestCadenceView(viewModel: viewModel) // Add our new cadence view
+                case 10:
+                    QuestActivitySetupView(viewModel: viewModel) // Add our new activity setup view
+                case 11:
+                    SummaryView(viewModel: viewModel) // Move summary to the final step
                 default:
                     Text("Unknown step")
                 }
@@ -93,7 +97,7 @@ struct OnboardingView: View {
                 .padding()
             }
             .background(ThemeManager.backgroundPrimary)
-            .navigationTitle("Kingdom Setup \(viewModel.currentStep)/9")
+            .navigationTitle("Kingdom Setup \(viewModel.currentStep)/11")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
