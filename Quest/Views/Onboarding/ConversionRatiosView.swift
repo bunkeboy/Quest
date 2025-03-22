@@ -2,6 +2,14 @@
 //  ConversionRatiosView.swift
 //  Quest
 //
+//  Created by Ryan Bunke on 3/21/25.
+//
+
+
+//
+//  ConversionRatiosView.swift
+//  Quest
+//
 
 import SwiftUI
 
@@ -66,6 +74,7 @@ struct ConversionRatiosView: View {
             .padding(.horizontal)
             
             Spacer()
+            
             
             // Create Quest button
             Button(action: {

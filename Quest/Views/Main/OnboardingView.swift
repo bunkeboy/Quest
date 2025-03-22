@@ -23,21 +23,15 @@ struct OnboardingView: View {
                 case 2:
                     GoalSettingView(viewModel: viewModel)
                 case 3:
-                    IncomeSourcesView(viewModel: viewModel)
-                case 4:
-                    NurturingActivitiesView(viewModel: viewModel)
-                case 5:
-                    GeneratingActivityView(viewModel: viewModel)
-                case 6:
-                    SkillAssessmentView(viewModel: viewModel)
-                case 7:
-                    ActivityPlanView(viewModel: viewModel)
-                case 8:
                     QuestCadenceView(viewModel: viewModel)
-                case 9:
-                    QuestActivitySetupView(viewModel: viewModel)
-                case 10:
-                    SummaryView(viewModel: viewModel)
+                case 4:
+                    IncomeSourcesView(viewModel: viewModel)
+                case 5:
+                    NurturingActivitiesView(viewModel: viewModel)
+                case 6:
+                    BusinessPercentageView(viewModel: viewModel)
+                case 7:
+                    ConversionRatiosView(viewModel: viewModel)
                 default:
                     Text("Unknown step")
                 }
@@ -61,7 +55,10 @@ struct OnboardingView: View {
                     
                     Spacer()
                     
-                    if viewModel.currentStep < 9 {
+                    // Only show Next button for appropriate steps
+                    // In OnboardingView.swift, replace the Next button section with:
+                    if viewModel.currentStep < 9 && ![1, 3, 4, 5, 7, 8].contains(viewModel.currentStep) {
+                        // Only show Next for steps that should have it (not 3, 4, 5, or 8)
                         Button(action: {
                             viewModel.nextStep()
                         }) {
@@ -75,7 +72,8 @@ struct OnboardingView: View {
                             .background(ThemeManager.secondaryColor)
                             .cornerRadius(8)
                         }
-                    } else {
+                    } else if viewModel.currentStep == 9 {
+                        // The Start Your Quest button for the last step
                         Button(action: {
                             viewModel.completeOnboarding()
                             onboardingComplete = true

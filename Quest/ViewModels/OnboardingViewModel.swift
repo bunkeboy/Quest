@@ -27,7 +27,7 @@ class OnboardingViewModel: ObservableObject {
     @Published var calculatedActivityCount: Int = 0
     @Published var selectedTile: ActivityTile?
     @Published var goalType: Quest.GoalType = .commission
-    @Published var goalValue: Double = 300000
+    @Published var goalValue: Double = 0  // Change from 300000 to 0
     @Published var timelineMonths: Int = 12
     
     // User can select up to 3 income sources

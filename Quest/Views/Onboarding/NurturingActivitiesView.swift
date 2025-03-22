@@ -2,9 +2,6 @@
 //  NurturingActivitiesView.swift
 //  Quest
 //
-//  Created by Ryan Bunke on 3/20/25.
-//
-
 
 import SwiftUI
 
@@ -13,12 +10,12 @@ struct NurturingActivitiesView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("Select Your Nurturing Activities")
+            Text("Select a Nurturing Activity")
                 .font(ThemeManager.medievalTitle())
                 .multilineTextAlignment(.center)
                 .padding()
             
-            Text("Choose up to 3 ways you'll nurture your relationships")
+            Text("Choose one way you'll nurture your relationships")
                 .font(ThemeManager.medievalBody())
                 .multilineTextAlignment(.center)
                 .foregroundColor(ThemeManager.textSecondary)
@@ -26,13 +23,17 @@ struct NurturingActivitiesView: View {
             
             // Nurturing activities selection
             ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
-                    ForEach(viewModel.nurturingActivities, id: \.self) { activity in
+                VStack(spacing: 15) {
+                    ForEach(NurturingActivity.allCases) { activity in
                         NurturingActivityCard(
-                            title: activity,
-                            isSelected: viewModel.selectedNurturingActivities.contains(activity),
+                            activity: activity,
+                            isSelected: viewModel.currentActivity == activity,
                             action: {
-                                toggleSelection(activity)
+                                // Set the selected activity
+                                viewModel.currentActivity = activity
+                                
+                                // Auto-advance to conversion ratios
+                                viewModel.currentStep = 6
                             }
                         )
                     }
@@ -40,49 +41,39 @@ struct NurturingActivitiesView: View {
                 .padding()
             }
             
-            // Selection counter
-            Text("\(viewModel.selectedNurturingActivities.count)/3 activities selected")
-                .font(.caption)
-                .foregroundColor(viewModel.selectedNurturingActivities.count == 3 ? ThemeManager.successColor : ThemeManager.textSecondary)
-                .padding()
-            
             Spacer()
+            
         }
         .padding()
     }
-    
-    private func toggleSelection(_ activity: String) {
-        if viewModel.selectedNurturingActivities.contains(activity) {
-            // Remove if already selected
-            viewModel.selectedNurturingActivities.removeAll { $0 == activity }
-        } else if viewModel.selectedNurturingActivities.count < 3 {
-            // Add if less than 3 selected
-            viewModel.selectedNurturingActivities.append(activity)
-        }
-    }
 }
 
+// Card for each nurturing activity
 struct NurturingActivityCard: View {
-    let title: String
+    let activity: NurturingActivity
     let isSelected: Bool
     let action: () -> Void
     
     var body: some View {
         Button(action: action) {
-            VStack {
+            HStack {
                 // Icon based on the activity type
-                Image(systemName: iconForActivity(title))
-                    .font(.system(size: 30))
+                Image(systemName: iconForActivity(activity))
+                    .font(.system(size: 24))
                     .foregroundColor(isSelected ? ThemeManager.accentColor : ThemeManager.textSecondary)
-                    .padding(.bottom, 5)
+                    .frame(width: 40)
                 
-                Text(title)
-                    .font(.system(size: 14, weight: .medium))
-                    .multilineTextAlignment(.center)
+                Text(activity.rawValue)
+                    .font(.system(size: 16, weight: .medium))
                     .foregroundColor(isSelected ? ThemeManager.textPrimary : ThemeManager.textSecondary)
+                
+                Spacer()
+                
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(ThemeManager.accentColor)
+                }
             }
-            .frame(height: 100)
-            .frame(maxWidth: .infinity)
             .padding()
             .background(isSelected ? ThemeManager.backgroundSecondary : ThemeManager.backgroundPrimary.opacity(0.5))
             .cornerRadius(10)
@@ -93,15 +84,16 @@ struct NurturingActivityCard: View {
         }
     }
     
-    private func iconForActivity(_ activity: String) -> String {
+    private func iconForActivity(_ activity: NurturingActivity) -> String {
         switch activity {
-        case "Calling": return "phone"
-        case "Newsletter": return "newspaper"
-        case "Events": return "calendar"
-        case "Social media": return "network"
-        case "Direct mail": return "envelope"
-        case "Client appreciation gifts": return "gift"
-        default: return "questionmark.circle"
+        case .phoneCalls: return "phone.fill"
+        case .doorknocking: return "door.left.hand.open"
+        case .newsletters: return "newspaper.fill"
+        case .events: return "calendar"
+        case .socialMedia: return "network"
+        case .directMail: return "envelope.fill"
+        case .gifts: return "gift.fill"
+        case .other: return "ellipsis.circle.fill"
         }
     }
 }

@@ -2,6 +2,14 @@
 //  BusinessPercentageView.swift
 //  Quest
 //
+//  Created by Ryan Bunke on 3/21/25.
+//
+
+
+//
+//  BusinessPercentageView.swift
+//  Quest
+//
 
 import SwiftUI
 
@@ -58,39 +66,6 @@ struct BusinessPercentageView: View {
             .padding(.horizontal)
             
             Spacer()
-            
-            // Navigation buttons
-            HStack {
-                // Back button
-                Button(action: {
-                    viewModel.currentStep = 5 // Go back to activity selection
-                }) {
-                    HStack {
-                        Image(systemName: "arrow.left")
-                        Text("Back")
-                    }
-                    .foregroundColor(ThemeManager.secondaryColor)
-                    .padding()
-                }
-                
-                Spacer()
-                
-                // Next button
-                Button(action: {
-                    viewModel.currentStep = 7 // Go to conversion ratios
-                }) {
-                    HStack {
-                        Text("Next")
-                        Image(systemName: "arrow.right")
-                    }
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 10)
-                    .background(ThemeManager.secondaryColor)
-                    .cornerRadius(8)
-                }
-            }
-            .padding()
         }
         .padding()
     }

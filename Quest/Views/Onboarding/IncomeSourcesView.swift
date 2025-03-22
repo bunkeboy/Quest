@@ -13,12 +13,12 @@ struct IncomeSourcesView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("Select Your Income Sources")
+            Text("Select a Business Source")
                 .font(ThemeManager.medievalTitle())
                 .multilineTextAlignment(.center)
                 .padding()
             
-            Text("Choose up to 3 primary sources that will feed your kingdom")
+            Text("Choose one source that will feed your kingdom")
                 .font(ThemeManager.medievalBody())
                 .multilineTextAlignment(.center)
                 .foregroundColor(ThemeManager.textSecondary)
@@ -26,13 +26,17 @@ struct IncomeSourcesView: View {
             
             // Income source selection
             ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
-                    ForEach(viewModel.incomeSources, id: \.self) { source in
-                        IncomeSourceCard(
-                            title: source,
-                            isSelected: viewModel.selectedIncomeSources.contains(source),
+                VStack(spacing: 15) {
+                    ForEach(BusinessSource.allCases) { source in
+                        BusinessSourceCard(
+                            source: source,
+                            isSelected: viewModel.currentSource == source,
                             action: {
-                                toggleSelection(source)
+                                // Set the selected source
+                                viewModel.currentSource = source
+                                
+                                // Auto-advance to next step
+                                viewModel.currentStep = 5 // Move to NurturingActivitiesView
                             }
                         )
                     }
@@ -40,49 +44,39 @@ struct IncomeSourcesView: View {
                 .padding()
             }
             
-            // Selection counter
-            Text("\(viewModel.selectedIncomeSources.count)/3 sources selected")
-                .font(.caption)
-                .foregroundColor(viewModel.selectedIncomeSources.count == 3 ? ThemeManager.successColor : ThemeManager.textSecondary)
-                .padding()
-            
             Spacer()
+            
         }
         .padding()
     }
-    
-    private func toggleSelection(_ source: String) {
-        if viewModel.selectedIncomeSources.contains(source) {
-            // Remove if already selected
-            viewModel.selectedIncomeSources.removeAll { $0 == source }
-        } else if viewModel.selectedIncomeSources.count < 3 {
-            // Add if less than 3 selected
-            viewModel.selectedIncomeSources.append(source)
-        }
-    }
 }
 
-struct IncomeSourceCard: View {
-    let title: String
+// Create a nice card for each business source
+struct BusinessSourceCard: View {
+    let source: BusinessSource
     let isSelected: Bool
     let action: () -> Void
     
     var body: some View {
         Button(action: action) {
-            VStack {
+            HStack {
                 // Icon based on the source type
-                Image(systemName: iconForSource(title))
-                    .font(.system(size: 30))
+                Image(systemName: iconForSource(source))
+                    .font(.system(size: 24))
                     .foregroundColor(isSelected ? ThemeManager.accentColor : ThemeManager.textSecondary)
-                    .padding(.bottom, 5)
+                    .frame(width: 40)
                 
-                Text(title)
-                    .font(.system(size: 14, weight: .medium))
-                    .multilineTextAlignment(.center)
+                Text(source.rawValue)
+                    .font(.system(size: 16, weight: .medium))
                     .foregroundColor(isSelected ? ThemeManager.textPrimary : ThemeManager.textSecondary)
+                
+                Spacer()
+                
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(ThemeManager.accentColor)
+                }
             }
-            .frame(height: 100)
-            .frame(maxWidth: .infinity)
             .padding()
             .background(isSelected ? ThemeManager.backgroundSecondary : ThemeManager.backgroundPrimary.opacity(0.5))
             .cornerRadius(10)
@@ -93,15 +87,14 @@ struct IncomeSourceCard: View {
         }
     }
     
-    private func iconForSource(_ source: String) -> String {
+    private func iconForSource(_ source: BusinessSource) -> String {
         switch source {
-        case "Brokerage leads": return "building.2"
-        case "Sphere of influence": return "person.3"
-        case "Door knocking": return "door.left.hand.open"
-        case "Cold calling": return "phone.arrow.up.right"
-        case "Past clients": return "person.crop.circle.badge.checkmark"
-        case "Referrals": return "arrow.triangle.branch"
-        default: return "questionmark.circle"
+        case .sourcedLeads: return "shippingbox.fill"
+        case .newLeads: return "person.crop.circle.badge.plus"
+        case .sphere: return "person.3.fill"
+        case .pastClients: return "person.crop.circle.badge.checkmark"
+        case .referrals: return "arrow.triangle.branch"
+        case .other: return "ellipsis.circle.fill"
         }
     }
 }
